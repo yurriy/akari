@@ -2,6 +2,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 class Jpeg2GrayScaleConverter {
+    private float redWeight, greenWeight, blueWeight;
+
     Jpeg2GrayScaleConverter() {
         this(0.2989f, 0.5866f, 0.1145f);
     }
@@ -11,10 +13,7 @@ class Jpeg2GrayScaleConverter {
         this.greenWeight = greenWeight;
         this.blueWeight = blueWeight;
     }
-    
-    private float redWeight, greenWeight, blueWeight;
 
-    
     private BufferedImage resize(BufferedImage img, int newW, int newH) {
         Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         BufferedImage resultImage = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
