@@ -1,5 +1,3 @@
-import com.sun.tools.javac.util.ArrayUtils;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -9,8 +7,8 @@ import java.util.Scanner;
 /*
  * Linear classifier for digits classification
  */
-public class LinClassifier {
-    private final int DIGITS = 10;
+class LinClassifier {
+    private final int CLASSES_CNT = 10;
     private int inputSize;
     private float[][] weights;
     private float[] adjustment;
@@ -19,14 +17,14 @@ public class LinClassifier {
         try {
             Scanner scanner = new Scanner(new FileReader(weightsFile));
             inputSize = scanner.nextInt();
-            weights = new float[DIGITS][inputSize];
-            for (int i = 0; i < DIGITS; i++) {
+            weights = new float[CLASSES_CNT][inputSize];
+            for (int i = 0; i < CLASSES_CNT; i++) {
                 for (int j = 0; j < inputSize; j++) {
                     weights[i][j] = scanner.nextFloat();
                 }
             }
-            adjustment = new float[DIGITS];
-            for (int i = 0; i < DIGITS; i++) {
+            adjustment = new float[CLASSES_CNT];
+            for (int i = 0; i < CLASSES_CNT; i++) {
                 adjustment[i] = scanner.nextFloat();
             }
         }
@@ -35,12 +33,24 @@ public class LinClassifier {
         }
     }
 
-    public int predict(float[] input) {
-        if (input.length != inputSize) {
-            throw new RuntimeException("Input size must be equal to " + inputSize);
+    int predict(float[][] input) {
+        if (input.length == 0 || input[0] == null || input.length * input[0].length != inputSize) {
+            throw new RuntimeException("Flattened array size must be equal to " + inputSize);
         }
+        float[] flattened = new float[inputSize];
+        int i = 0;
+        for (float[] row : input) {
+            for (float x : row) {
+                flattened[i] = x;
+                i++;
+            }
+        }
+        return predict(flattened);
+    }
+
+    private int predict(float[] input) {
         ArrayList<Double> probabilities = new ArrayList<>();
-        for (int i = 0; i < DIGITS; i++) {
+        for (int i = 0; i < CLASSES_CNT; i++) {
             double value = 0;
             for (int j = 0; j < inputSize; j++) {
                 value += input[j] * weights[i][j];
@@ -53,7 +63,7 @@ public class LinClassifier {
         for (double x : probabilities) {
             expSum += Math.exp(x - max);
         }
-        for (int i = 0; i < DIGITS; i++) {
+        for (int i = 0; i < CLASSES_CNT; i++) {
             probabilities.set(i, Math.exp(probabilities.get(i) - max) / expSum);
         }
         return probabilities.indexOf(Collections.max(probabilities));

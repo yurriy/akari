@@ -44,6 +44,6 @@ class Jpeg2GrayScaleConverter {
     }
 
     private float rgbToGrayScale(Color c) {
-        return (redWeight * c.getRed() + greenWeight * c.getGreen() + blueWeight * c.getBlue()) / 255;
+        return Math.max(0, Math.min(1, (redWeight * c.getRed() + greenWeight * c.getGreen() + blueWeight * c.getBlue()) / 255));
     }
 }
