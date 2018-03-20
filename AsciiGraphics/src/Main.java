@@ -15,15 +15,11 @@ public class Main {
         } catch (IOException e) {
             System.out.print(e.getMessage());
         }
-        int width = 100;
-        Jpeg2AsciiConverter converter = new Jpeg2AsciiConverter();
-        String[] res = converter.convert(img, width);
-        for (String row : res) {
-            for (char c : row.toCharArray()) {
-                System.out.print(c);
-                System.out.print(' ');
-            }
-            System.out.println("");
-        }
-    }
+        // jpeg to ASCII example
+        Jpeg2GrayScaleConverter converter = new Jpeg2GrayScaleConverter();
+        GrayScaleAsciiPrinter.print(converter.convert(img, 100));
+        // classification example
+        Jpeg2GrayScaleConverter converter2 = new Jpeg2GrayScaleConverter();
+        GrayScaleAsciiPrinter.print(converter2.convert(img, 28));
+     }
 }
